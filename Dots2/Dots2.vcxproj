@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Dots\Brain.cpp" />
     <ClCompile Include="src\Dots\Dot.cpp" />
     <ClCompile Include="src\Env\Scene.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Dots\Brain.h" />
     <ClInclude Include="src\Dots\Dot.h" />
     <ClInclude Include="src\Env\Scene.h" />
     <ClInclude Include="src\Utils.h" />

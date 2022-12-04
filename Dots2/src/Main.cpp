@@ -6,6 +6,8 @@
 
 #include <Windows.h>
 
+#include <random>
+
 int main()
 {
 	int sceneWidth = 50;

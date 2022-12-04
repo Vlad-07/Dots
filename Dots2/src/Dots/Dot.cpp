@@ -5,21 +5,32 @@
 #include <iostream>
 #include <Windows.h>
 
-Dot::Dot(Vec2<int> pos, char id) : m_Pos(pos), m_Id(id)
+Dot::Dot(const Vec2<int>& pos, const char& id) : m_Pos(pos), m_Id(id)
 {
 }
 
-void Dot::Move(Vec2<int> move)
+void Dot::Move(const Vec2<int>& move, bool separateAxis)
 {
-	if (Scene::CheckPos(m_Pos + move))
-		m_Pos += move;
+	if (!separateAxis)
+	{
+		if (Scene::CheckPos(m_Pos + move))
+			m_Pos += move;
+	}
+	else
+	{
+		if (Scene::CheckPos({ m_Pos.x + move.x, m_Pos.y }))
+			m_Pos.x += move.x;
+		if (Scene::CheckPos({ m_Pos.x, m_Pos.y + move.y }))
+			m_Pos.y += move.y;
+	}
 }
 
 void Dot::MoveAI()
 {
-	Vec2<int> moveVec = Vec2<int>::Random(2, 2) * Vec2<int>(2, 2) - Vec2<int>(1, 1);
+	Inputs ins = { m_Pos };
+	brain.SetInputs(ins);
 
-	// actual AI
+	brain.Compute();
 
-	Move(moveVec);
+	Move(brain.GetActions().movement);
 }

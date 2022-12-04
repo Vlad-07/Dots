@@ -16,6 +16,8 @@ public:
 	~Scene();
 
 	inline static Scene* Get() { return s_Intance; }
+	inline static Vec2<int> GetSize() { return Scene::Get()->m_Size; }
+	inline static Vec2<int> GetNrOfDots() { return Scene::Get()->m_NrOfDots; }
 
 	void Update(bool heuristics = false);
 	void DrawScene();
