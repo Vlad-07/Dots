@@ -1,15 +1,15 @@
 #pragma once
 
-#include"../Utils.h"
+#include <glm/glm.hpp>
 
 struct Inputs
 {
-	Vec2<int> pos;
+	glm::vec2 pos;
 };
 
 struct Actions
 {
-	Vec2<int> movement;
+	glm::vec2 movement;
 };
 
 struct Neuron

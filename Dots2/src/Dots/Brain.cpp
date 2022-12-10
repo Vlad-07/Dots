@@ -1,6 +1,6 @@
 #include "Brain.h"
 
-#include <iostream>
+#include <glm/gtc/random.hpp>
 
 void Brain::SetInputs(Inputs in)
 {
@@ -11,15 +11,15 @@ void Brain::Compute()
 {
 	// Actual AI
 
-	m_Actions = { Vec2<int>::Random(2, 2) * Vec2<int>(2) - Vec2<int>(1) };
+	m_Actions = {glm::circularRand(1)};
 
 	m_Computed = true;
 }
 
 Actions Brain::GetActions()
 {
-	if (!m_Computed)
-		std::cout << "W - Not computed!!\n\n";
+//	if (!m_Computed)
+//		std::cout << "W - Not computed!!\n\n";
 	m_Computed = false;
 	return m_Actions;
 }

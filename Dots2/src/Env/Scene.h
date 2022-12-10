@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Dots/Dot.h"
-#include "../Utils.h"
+#include <glm/glm.hpp>
 
+#include "../Dots/Dot.h"
 
 //  x+ ->
 // y+
@@ -16,19 +16,22 @@ public:
 	~Scene();
 
 	inline static Scene* Get() { return s_Intance; }
-	inline static Vec2<int> GetSize() { return Scene::Get()->m_Size; }
-	inline static Vec2<int> GetNrOfDots() { return Scene::Get()->m_NrOfDots; }
+	inline static glm::vec2 GetSize() { return Scene::Get()->m_Size; }
+	inline static int GetNrOfDots() { return Scene::Get()->m_NrOfDots; }
 
 	void Update(bool heuristics = false);
 	void DrawScene();
 
-	static bool CheckPos(Vec2<int> pos);
+	// OBSOLETE
+	void DrawSceneConsole();
+
+	static bool CheckPos(glm::vec2 pos);
 
 private:
 	void PrintDotsPos();
 
 private:
-	Vec2<int> m_Size;
+	glm::vec2 m_Size;
 	Dot* m_Dots;
 	int m_NrOfDots;
 	bool m_InternalDots;

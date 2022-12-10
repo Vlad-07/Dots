@@ -1,3 +1,7 @@
+// OBSOLETE
+
+/*
+
 #pragma once
 
 #include <chrono>
@@ -94,3 +98,5 @@ bool operator !=(const Vec2<T>& vec1, const Vec2<T>& vec2)
 		return true;
 	return false;
 }
+
+*/

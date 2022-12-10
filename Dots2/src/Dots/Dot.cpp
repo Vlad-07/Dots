@@ -2,14 +2,11 @@
 
 #include "../Env/Scene.h"
 
-#include <iostream>
-#include <Windows.h>
-
-Dot::Dot(const Vec2<int>& pos, const char& id) : m_Pos(pos), m_Id(id)
+Dot::Dot(const glm::vec2& pos, const char& id) : m_Pos(pos), m_Id(id)
 {
 }
 
-void Dot::Move(const Vec2<int>& move, bool separateAxis)
+void Dot::Move(const glm::vec2& move, bool separateAxis)
 {
 	if (!separateAxis)
 	{

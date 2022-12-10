@@ -36,3 +36,12 @@
 .vs
 x64
 x32
+
+*.user
+*.vcxproj
+*.filters
+*.sln
+imgui.ini
+
+bin/
+bin-int/
