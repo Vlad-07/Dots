@@ -1,6 +1,6 @@
 workspace "Dots2"
 	architecture "x64"
-	startproject "Sandbox"
+	startproject "Dots2"
 
 	configurations
 	{
