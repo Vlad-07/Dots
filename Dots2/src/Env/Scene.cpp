@@ -1,11 +1,15 @@
 #include "Scene.h"
 
+// HACK: Eis.h includes max macro definition, wich breaks glm random functions
 #include <Eis/Core/Log.h>
 #include <Eis/Core/Core.h>
 #include <Eis/Input/Input.h>
 #include <Eis/Input/Keycodes.h>
+#include <Eis/Renderer/Renderer/Renderer2D.h>
 
 #include <glm/gtc/random.hpp>
+
+#include <iostream> // TODO: remove iostream
 
 Scene* Scene::s_Intance = nullptr;
 
@@ -19,7 +23,10 @@ Scene::Scene(int xSize, int ySize, int nrOfDots, bool randomStartPoses) : m_Size
 
 	if (randomStartPoses)
 		for (int i = 0, id = 'a'; i < m_NrOfDots; i++, id++)
-			m_Dots[i] = Dot(glm::vec2(glm::linearRand(0.0f, m_Size.x),  glm::linearRand(0.0f, m_Size.y)), id);
+			m_Dots[i] = Dot(glm::vec2((int)glm::linearRand(0.0f, m_Size.x),  (int)glm::linearRand(0.0f, m_Size.y)), id);
+	// It is possible for the rand eng to produce the same coords twice
+	// does not matter bc in the next iteration, one of the dots will move 
+	// might cause problems in the first frame
 	
 	PrintDotsPos();
 }
@@ -45,8 +52,6 @@ void Scene::Update(bool heuristics)
 		int moveX = Eis::Input::IsKeyPressed(EIS_KEY_D) - Eis::Input::IsKeyPressed(EIS_KEY_A);
 		int moveY = Eis::Input::IsKeyPressed(EIS_KEY_S) - Eis::Input::IsKeyPressed(EIS_KEY_W);
 
-//		std::cout << moveX << ' ' << moveY << '\n';
-
 		Scene::Get()->m_Dots[0].Move({ moveX, moveY});
 		for (int i = 1; i < Scene::Get()->m_NrOfDots; i++)
 			Scene::Get()->m_Dots[i].MoveAI();
@@ -59,9 +64,32 @@ void Scene::Update(bool heuristics)
 
 void Scene::DrawScene()
 {
+	// TODO: Scene::DrawScene() - slow implementation
+	
+	float stride = 1.2f;
 
+	for (int y = 0; y < m_Size.y; y++)
+	{
+		for (int x = 0; x < m_Size.x; x++)
+		{
+			glm::vec4 color = m_EmptyCellColor;
+			for (int i = 0; i < Scene::GetNrOfDots(); i++)
+				if (!m_Dots[i].drawn && (m_Dots[i].GetPos().x == x && m_Dots[i].GetPos().y == y))
+				{
+					color = m_CellColor;
+					m_Dots[i].drawn = true;
+					break;
+				}
+
+			Eis::Renderer2D::DrawQuad({x * stride, -y * stride, 0.0f}, {1.0f, 1.0f}, color);
+		}
+	}
+
+	for (int i = 0; i < Scene::GetNrOfDots(); i++)
+		m_Dots[i].drawn = false;
 }
 
+// OBSOLETE
 void Scene::DrawSceneConsole() 
 {	
 	char* scene = new char[m_Size.x * m_Size.y];
@@ -75,7 +103,7 @@ void Scene::DrawSceneConsole()
 		scene[(int)(dot.GetPos().y * m_Size.x + dot.GetPos().x)] = dot.GetId();
 	}
 
-/*	for (int i = 0; i < m_Size.x + 2; i++)
+	for (int i = 0; i < m_Size.x + 2; i++)
 		std::cout << '_';
 	std::cout << '\n';
 
@@ -91,7 +119,7 @@ void Scene::DrawSceneConsole()
 	for (int i = 0; i < m_Size.x; i++)
 		std::cout << '_';
 	std::cout << "|\n";
-	*/
+	
 
 	PrintDotsPos();
 
@@ -119,7 +147,7 @@ void Scene::PrintDotsPos()
 	for (int i = 0; i < Scene::GetNrOfDots(); i++)
 	{
 		const Dot& dot = m_Dots[i];
-//		std::cout << dot.GetId() << ' ' << dot.GetPos().x << ' ' << dot.GetPos().y << '\n';
+		std::cout << dot.GetId() << ' ' << dot.GetPos().x << ' ' << dot.GetPos().y << '\n';
 	}
-//	std::cout << '\n';
+	std::cout << '\n';
 }

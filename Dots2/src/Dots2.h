@@ -9,7 +9,7 @@ class Dots2 : public Eis::Layer
 {
 	Eis::OrthoCameraController m_CamController;
 
-	const int sceneWidth = 50;
+	const int sceneWidth = 20;
 	const int sceneHeight = 20;
 	const int dotCount = 5;
 

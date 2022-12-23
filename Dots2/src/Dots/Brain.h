@@ -35,6 +35,6 @@ public:
 
 private:
 	Inputs m_CurrentFrameInput;
-	Actions m_Actions;
+	Actions m_Actions; // init
 	bool m_Computed;
 };

@@ -2,7 +2,7 @@
 
 #include "../Env/Scene.h"
 
-Dot::Dot(const glm::vec2& pos, const char& id) : m_Pos(pos), m_Id(id)
+Dot::Dot(const glm::vec2& pos, const uint8_t& id) : m_Pos(pos), m_Id(id)
 {
 }
 
@@ -29,5 +29,6 @@ void Dot::MoveAI()
 
 	brain.Compute();
 
-	Move(brain.GetActions().movement);
+	Actions actions = brain.GetActions();
+	Move(actions.movement);
 }

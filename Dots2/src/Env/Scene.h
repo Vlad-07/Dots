@@ -36,6 +36,9 @@ private:
 	int m_NrOfDots;
 	bool m_InternalDots;
 
-
 	static Scene* s_Intance;
-};
+
+	
+	const glm::vec4 m_EmptyCellColor{ 0.3f, 0.3f, 0.3f, 1.0f };
+	const glm::vec4 m_CellColor{ 0.3f, 0.8f, 0.25f, 1.0f };
+}; 
