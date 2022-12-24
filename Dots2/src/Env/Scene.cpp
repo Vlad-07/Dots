@@ -3,6 +3,7 @@
 // HACK: Eis.h includes max macro definition, wich breaks glm random functions
 #include <Eis/Core/Log.h>
 #include <Eis/Core/Core.h>
+#include <Eis/Core/Random.h>
 #include <Eis/Input/Input.h>
 #include <Eis/Input/Keycodes.h>
 #include <Eis/Renderer/Renderer/Renderer2D.h>
@@ -22,11 +23,11 @@ Scene::Scene(int xSize, int ySize, int nrOfDots, bool randomStartPoses) : m_Size
 	m_Dots = new Dot[nrOfDots];
 
 	if (randomStartPoses)
-		for (int i = 0, id = 'a'; i < m_NrOfDots; i++, id++)
-			m_Dots[i] = Dot(glm::vec2((int)glm::linearRand(0.0f, m_Size.x),  (int)glm::linearRand(0.0f, m_Size.y)), id);
+		for (uint32_t i = 0, id = 0; i < m_NrOfDots; i++, id++)
+			m_Dots[i] = Dot(glm::vec2(Eis::Random::UInt(0, m_Size.x), Eis::Random::UInt(0, m_Size.y)), id);
 	// It is possible for the rand eng to produce the same coords twice
 	// does not matter bc in the next iteration, one of the dots will move 
-	// might cause problems in the first frame
+	// might cause problems the first frame
 	
 	PrintDotsPos();
 }
@@ -49,8 +50,8 @@ void Scene::Update(bool heuristics)
 {
 	if (heuristics)
 	{
-		int moveX = Eis::Input::IsKeyPressed(EIS_KEY_D) - Eis::Input::IsKeyPressed(EIS_KEY_A);
-		int moveY = Eis::Input::IsKeyPressed(EIS_KEY_S) - Eis::Input::IsKeyPressed(EIS_KEY_W);
+		int moveX = Eis::Input::IsKeyPressed(EIS_KEY_RIGHT) - Eis::Input::IsKeyPressed(EIS_KEY_LEFT);
+		int moveY = Eis::Input::IsKeyPressed(EIS_KEY_DOWN) - Eis::Input::IsKeyPressed(EIS_KEY_UP);
 
 		Scene::Get()->m_Dots[0].Move({ moveX, moveY});
 		for (int i = 1; i < Scene::Get()->m_NrOfDots; i++)
