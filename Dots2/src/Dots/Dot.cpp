@@ -1,6 +1,6 @@
 #include "Dot.h"
 
-#include "../Env/Scene.h"
+#include "../Env/Simulator.h"
 
 Dot::Dot(const glm::vec2& pos, const uint32_t& id) : m_Pos(pos), m_Id(id)
 {
@@ -10,14 +10,14 @@ void Dot::Move(const glm::vec2& move, bool separateAxis)
 {
 	if (!separateAxis)
 	{
-		if (Scene::CheckPos(m_Pos + move))
+		if (Simulator::CheckPos(m_Pos + move))
 			m_Pos += move;
 	}
 	else
 	{
-		if (Scene::CheckPos({ m_Pos.x + move.x, m_Pos.y }))
+		if (Simulator::CheckPos({ m_Pos.x + move.x, m_Pos.y }))
 			m_Pos.x += move.x;
-		if (Scene::CheckPos({ m_Pos.x, m_Pos.y + move.y }))
+		if (Simulator::CheckPos({ m_Pos.x, m_Pos.y + move.y }))
 			m_Pos.y += move.y;
 	}
 }

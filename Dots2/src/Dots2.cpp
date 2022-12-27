@@ -1,6 +1,6 @@
 #include "Dots2.h"
 
-Dots2::Dots2() : m_CamController(16.0f / 9.0f), m_Scene(sceneWidth, sceneHeight, dotCount), m_Tick(0)
+Dots2::Dots2() : m_CamController(16.0f / 9.0f), m_Simulator(sceneWidth, sceneHeight, dotCount, false)
 {
 }
 
@@ -14,7 +14,6 @@ void Dots2::OnDetach()
 
 void Dots2::OnUpdate(Eis::TimeStep ts)
 {
-	m_Tick++;
 //	EIS_TRACE("Tick: {0}", m_Tick);
 
 //	m_CamController.OnUpdate(ts); // TODO: implement key system in Eis
@@ -24,8 +23,8 @@ void Dots2::OnUpdate(Eis::TimeStep ts)
 
 	Eis::Renderer2D::BeginScene(m_CamController.GetCamera());
 
-	m_Scene.Update(true);
-	m_Scene.DrawScene();
+	m_Simulator.Update();
+	m_Simulator.DrawScene();
 
 	Eis::Renderer2D::EndScene();
 }

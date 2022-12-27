@@ -3,7 +3,7 @@
 #include <Eis.h>
 
 #include "Dots/Dot.h"
-#include "Env/Scene.h"
+#include "Env/Simulator.h"
 
 class Dots2 : public Eis::Layer
 {
@@ -13,10 +13,7 @@ class Dots2 : public Eis::Layer
 	const int sceneHeight = 20;
 	const int dotCount = 5;
 
-	Scene m_Scene;
-
-	int m_Tick;
-
+	Simulator m_Simulator;
 public:
 	Dots2();
 	virtual ~Dots2() = default;
