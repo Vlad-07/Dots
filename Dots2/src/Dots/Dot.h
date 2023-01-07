@@ -4,6 +4,8 @@
 
 #include "Brain.h"
 
+extern class Simulator; // SUS: might cause trouble
+
 class Dot
 {
 public:
@@ -11,8 +13,8 @@ public:
 	Dot(const glm::vec2& pos, const uint32_t& id);
 	~Dot() = default;
 
-	void Move(const glm::vec2& move, bool separateAxis = false);
-	void MoveAI();
+	void Move(const glm::vec2& move, const Simulator& sim, bool separateAxis = false);
+	void MoveAI(const Simulator& sim);
 
 	void SetPos(const glm::vec2& pos) { m_Pos = pos; }
 	inline glm::vec2 GetPos() const { return m_Pos; }

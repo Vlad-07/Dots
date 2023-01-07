@@ -15,23 +15,22 @@ public:
 	Simulator(int xSize, int ySize, int nrOfDots, bool heuristics, Dot* dots);
 	~Simulator();
 
-	inline static Simulator* Get() { return s_Intance; }
-	inline static glm::vec2 GetSize() { return Simulator::Get()->m_Size; }
-	inline static int GetNrOfDots() { return Simulator::Get()->m_NrOfDots; }
-	inline static bool GetState() { return Simulator::Get()->m_Pause; }
-	inline static uint32_t GetTick() { return Simulator::Get()->m_TickCount; }
+	inline glm::vec2 GetSize() const { return m_Size; }
+	inline int GetNrOfDots() const { return m_NrOfDots; }
+	inline bool GetState() const { return m_Pause; }
+	inline uint32_t GetTick() const { return m_TickCount; }
 
 	void Update();
 	void DrawScene();
+	void PrintDotsPos();
 
 	// OBSOLETE
 	void DrawSceneConsole();
 
-	static bool CheckPos(glm::vec2 pos);
+	bool CheckPos(glm::vec2 pos) const;
 
 private:
 	void TickDots();
-	void PrintDotsPos();
 
 private:
 	glm::vec2 m_Size;
@@ -42,9 +41,6 @@ private:
 	bool m_Pause;
 
 	uint32_t m_TickCount;
-
-	static Simulator* s_Intance;
-
 	
 	const glm::vec4 m_EmptyCellColor{ 0.3f, 0.3f, 0.3f, 1.0f };
 	const glm::vec4 m_CellColor{ 0.3f, 0.8f, 0.25f, 1.0f };

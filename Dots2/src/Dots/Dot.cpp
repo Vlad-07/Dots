@@ -6,23 +6,23 @@ Dot::Dot(const glm::vec2& pos, const uint32_t& id) : m_Pos(pos), m_Id(id)
 {
 }
 
-void Dot::Move(const glm::vec2& move, bool separateAxis)
+void Dot::Move(const glm::vec2& move, const Simulator& sim, bool separateAxis)
 {
 	if (!separateAxis)
 	{
-		if (Simulator::CheckPos(m_Pos + move))
+		if (sim.CheckPos(m_Pos + move))
 			m_Pos += move;
 	}
 	else
 	{
-		if (Simulator::CheckPos({ m_Pos.x + move.x, m_Pos.y }))
+		if (sim.CheckPos({ m_Pos.x + move.x, m_Pos.y }))
 			m_Pos.x += move.x;
-		if (Simulator::CheckPos({ m_Pos.x, m_Pos.y + move.y }))
+		if (sim.CheckPos({ m_Pos.x, m_Pos.y + move.y }))
 			m_Pos.y += move.y;
 	}
 }
 
-void Dot::MoveAI()
+void Dot::MoveAI(const Simulator& sim)
 {
 	Inputs ins = { m_Pos };
 	brain.SetInputs(ins);
@@ -30,5 +30,5 @@ void Dot::MoveAI()
 	brain.Compute();
 
 	Actions actions = brain.GetActions();
-	Move(actions.movement);
+	Move(actions.movement, sim);
 }

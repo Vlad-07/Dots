@@ -11,7 +11,7 @@ class Dots2 : public Eis::Layer
 
 	const int sceneWidth = 20;
 	const int sceneHeight = 20;
-	const int dotCount = 5;
+	const int dotCount = 200;
 
 	Simulator m_Simulator;
 public:

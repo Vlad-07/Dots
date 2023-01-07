@@ -12,15 +12,9 @@
 
 #include <iostream> // TODO: remove iostream
 
-Simulator* Simulator::s_Intance = nullptr;
-
 Simulator::Simulator(int xSize, int ySize, int nrOfDots, bool heuristics, bool randomStartPoses)
 	: m_Size(xSize, ySize), m_NrOfDots(nrOfDots), m_InternalDots(true), m_Heuristics(heuristics), m_Pause(false), m_TickCount(0)
 {
-	if (s_Intance)
-		EIS_ASSERT(false, "Simulator already exists!");
-	Simulator::s_Intance = this;
-
 	m_Dots = new Dot[nrOfDots];
 
 	if (randomStartPoses)
@@ -36,16 +30,12 @@ Simulator::Simulator(int xSize, int ySize, int nrOfDots, bool heuristics, bool r
 Simulator::Simulator(int xSize, int ySize, int nrOfDots, bool heuristics, Dot* dots)
 	: m_Size(xSize, ySize), m_NrOfDots(nrOfDots), m_Dots(dots), m_InternalDots(false), m_Heuristics(heuristics), m_Pause(false), m_TickCount(0)
 {
-	if (s_Intance)
-		DebugBreak();
-	Simulator::s_Intance = this;
 }
 
 Simulator::~Simulator()
 {
 	if (m_InternalDots)
 		delete[] m_Dots;
-	Simulator::s_Intance = nullptr;
 }
 
 void Simulator::Update()
@@ -79,7 +69,7 @@ void Simulator::Update()
 
 void Simulator::DrawScene()
 {
-	// TODO: Simulator::DrawScene() - slow implementation
+	// TODO: Simulator::DrawScene() - slow (O(x * y * nrOfDots)) implementation
 	
 	float stride = 1.2f;
 
@@ -112,14 +102,14 @@ void Simulator::TickDots()
 		int moveX = Eis::Input::IsKeyPressed(EIS_KEY_RIGHT) - Eis::Input::IsKeyPressed(EIS_KEY_LEFT);
 		int moveY = Eis::Input::IsKeyPressed(EIS_KEY_DOWN) - Eis::Input::IsKeyPressed(EIS_KEY_UP);
 
-		Simulator::Get()->m_Dots[0].Move({ moveX, moveY});
-		for (int i = 1; i < Simulator::Get()->m_NrOfDots; i++)
-			Simulator::Get()->m_Dots[i].MoveAI();
+		m_Dots[0].Move({ moveX, moveY}, *this);
+		for (int i = 1; i < m_NrOfDots; i++)
+			m_Dots[i].MoveAI(*this);
 		return;
 	}
 
-	for (int i = 1; i < Simulator::Get()->m_NrOfDots; i++)
-		Simulator::Get()->m_Dots[i].MoveAI();
+	for (int i = 1; i < m_NrOfDots; i++)
+		m_Dots[i].MoveAI(*this);
 }
 
 // OBSOLETE
@@ -159,17 +149,17 @@ void Simulator::DrawSceneConsole()
 	delete[] scene;
 }
 
-bool Simulator::CheckPos(glm::vec2 pos)
+bool Simulator::CheckPos(glm::vec2 pos) const
 {
 	if (pos.x < 0 || pos.y < 0)
 		return false;
 
-	if (pos.x >= Simulator::Get()->m_Size.x || pos.y >= Simulator::Get()->m_Size.y)
+	if (pos.x >= m_Size.x || pos.y >= m_Size.y)
 		return false;
 
-	for (int i = 0; i < Simulator::Get()->m_NrOfDots; i++)
+	for (int i = 0; i < m_NrOfDots; i++)
 	{
-		if (Simulator::Get()->m_Dots[i].GetPos() == pos)
+		if (m_Dots[i].GetPos() == pos)
 			return false;
 	}
 	return true;

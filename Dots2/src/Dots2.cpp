@@ -16,7 +16,9 @@ void Dots2::OnUpdate(Eis::TimeStep ts)
 {
 //	EIS_TRACE("Tick: {0}", m_Tick);
 
-//	m_CamController.OnUpdate(ts); // TODO: implement key system in Eis
+	// NEXT: choose simulation type: generations system / continouos evolution
+
+	m_CamController.OnUpdate(ts); // TODO: implement key system in Eis
 
 	Eis::RenderCommands::SetClearColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
 	Eis::RenderCommands::Clear();
