@@ -1,5 +1,5 @@
 workspace "Dots2"
-	architecture "x64"
+	architecture "x86_64"
 	startproject "Dots2"
 
 	configurations
@@ -7,6 +7,11 @@ workspace "Dots2"
 		"Debug",
 		"Release",
 		"Distrib"
+	}
+
+	flags
+	{
+		"MultiProcessorCompile"
 	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -73,8 +78,6 @@ project "Eis"
 
 		defines
 		{
-			"EIS_BUILD_DLL",
-			"EIS_PLATFORM_WINDOWS",
 			"GLFW_INCLUDE_NONE"
 		}
 
@@ -125,11 +128,6 @@ project "Dots2"
 	
 	filter "system:windows"
 		systemversion "latest"
-
-		defines
-		{
-			"EIS_PLATFORM_WINDOWS"
-		}
 
 	filter "configurations:Debug"
 		defines "EIS_DEBUG"
