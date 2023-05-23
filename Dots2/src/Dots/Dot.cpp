@@ -1,34 +1,33 @@
 #include "Dot.h"
 
+#include <Eis/Core/Random.h>
+
 #include "../Env/Simulator.h"
 
-Dot::Dot(const glm::vec2& pos, const uint32_t& id) : m_Pos(pos), m_Id(id)
+// TODO: brain config more accesible
+Dot::Dot(const glm::vec2& pos, const uint32_t& id) : m_Brain(3, 2, 10), m_Pos(pos), m_Id(id), m_Passed(false)
 {
 }
 
-void Dot::Move(const glm::vec2& move, const Simulator& sim, bool separateAxis)
+void Dot::Move(const glm::vec2& move, const Simulator& sim)
 {
-	if (!separateAxis)
-	{
-		if (sim.CheckPos(m_Pos + move))
-			m_Pos += move;
-	}
-	else
-	{
-		if (sim.CheckPos({ m_Pos.x + move.x, m_Pos.y }))
-			m_Pos.x += move.x;
-		if (sim.CheckPos({ m_Pos.x, m_Pos.y + move.y }))
-			m_Pos.y += move.y;
-	}
+	if (sim.CheckPos(glm::vec2(m_Pos.x + move.x, m_Pos.y)))
+		m_Pos.x += move.x;
+	if (sim.CheckPos(glm::vec2(m_Pos.x, m_Pos.y + move.y)))
+		m_Pos.y += move.y;
 }
 
 void Dot::MoveAI(const Simulator& sim)
 {
-	Inputs ins = { m_Pos };
-	brain.SetInputs(ins);
+	std::vector<float> inputs;
+	inputs.push_back((m_Pos.x / sim.GetSize().x) * 2.0f - 1.0f); // x
+	inputs.push_back((m_Pos.y / sim.GetSize().y) * 2.0f - 1.0f); // y
+	inputs.push_back(Eis::Random::Float(-1.0f, 1.0f));			 // random
 
-	brain.Compute();
+	m_Brain.SetInput(inputs);
 
-	Actions actions = brain.GetActions();
-	Move(actions.movement, sim);
+	m_Brain.Compute();
+
+	std::vector<float> actions = m_Brain.GetOutput();
+	Move({ actions[0], actions[1] }, sim);
 }
