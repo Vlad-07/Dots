@@ -1,6 +1,12 @@
 #include "Simulator.h"
 
-Simulator::Simulator() : m_Tick(0), m_Generation(0), m_Size(SpaceSize), m_Pause(false) {}
+Simulator* Simulator::s_Instance = nullptr;
+
+Simulator::Simulator() : m_Dots(), m_DotSurvival(), m_Tick(0), m_Generation(0), m_Size(SpaceSize), m_Pause(false)
+{
+	EIS_ASSERT(!s_Instance, "Simulator instance already exists!");
+	s_Instance = this;
+}
 
 void Simulator::Init()
 {
@@ -12,6 +18,17 @@ void Simulator::Init()
 
 		m_Dots[i] = Dot(pos);
 	}
+}
+
+void Simulator::FullReset()
+{
+	EIS_INFO("Resetting simulation!");
+
+	m_Tick = 0;
+	m_Generation = 0;
+	m_Pause = false;
+	m_DotSurvival.reset();
+	Init();
 }
 
 void Simulator::Step()
@@ -93,27 +110,67 @@ void Simulator::Step()
 	}
 }
 
+int Simulator::SelectDots()
+{
+	m_DotSurvival.reset();
+	int survivors = 0;
+	for (uint32_t i = 0; i < m_Dots.size(); i++)
+	{
+		if (SurvivalLaw(m_Dots[i]))
+			m_DotSurvival.set(i, true), survivors++;
+	}
+	return survivors;
+}
+
 void Simulator::StepGen()
 {
 	m_Generation++;
 
-	// Genetic Evolution
-	//     Create new dots
-	//     Discard old ones
+	m_LastGenSurvivorCount = SelectDots();
 
-	// TEMP
-	for (int i = 0; i < DotNumber; i++)
+	if (m_LastGenSurvivorCount == 0)
 	{
-		glm::ivec2 pos = glm::ivec2(-1);
-		while (!CheckPosAvailable(pos))
-			pos = glm::ivec2(Eis::Random::UInt(0, SpaceSize), Eis::Random::UInt(0, SpaceSize));
-
-		m_Dots[i] = Dot(pos);
+		FullReset();
+		return;
 	}
+
+	Dot* survivingDots = (Dot*)calloc(m_LastGenSurvivorCount, sizeof(Dot));
+	for (uint32_t i = 0, j = 0; i < m_LastGenSurvivorCount; i++)
+	{
+		for (; !m_DotSurvival.test(j); j++);
+		survivingDots[i] = m_Dots[j];
+	}
+
+	for (uint32_t i = 0; i < m_Dots.size(); i++)
+	{
+		Dot& dot = m_Dots[i];
+
+		// Randomize dot position
+		glm::ivec2 newPos(-1);
+		while (!CheckPosAvailable(newPos))
+			newPos = glm::ivec2(Eis::Random::UInt(0, m_Size.x - 1), Eis::Random::UInt(0, m_Size.x - 1));
+
+		// If dot survived, just mutate it
+		if (m_DotSurvival.test(i))
+		{
+			dot.SetPos(newPos);
+			dot.GetBrain().Mutate();
+		}
+		// Else select a parent and use its mutated network
+		else
+		{
+			uint32_t parentID = Eis::Random::UInt(0, m_LastGenSurvivorCount - 1);
+
+			dot = Dot(newPos, survivingDots[parentID].GetBrain());
+			dot.GetBrain().Mutate();
+		}
+	}
+
+	free(survivingDots);
 }
 
 
-bool Simulator::CheckPosAvailable(glm::ivec2 pos)
+bool Simulator::CheckPosAvailable(glm::ivec2 pos) const
 {
 	if (pos.x < 0 || pos.y < 0 || pos.x >= m_Size.x || pos.y >= m_Size.y)
 		return false;

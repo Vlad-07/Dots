@@ -5,6 +5,8 @@
 
 #include "Simulator.h"
 
+extern bool SurvivalLaw(const Dot& dot);
+
 class Dots3 : public Eis::Layer
 {
 public:

@@ -7,7 +7,6 @@
 class Dot
 {
 public:
-
 	struct StepResponse
 	{
 		enum DesiredAction
@@ -20,7 +19,7 @@ public:
 	};
 
 public:
-	Dot() = default;
+	Dot() : m_Pos(0), m_Brain() {}
 	Dot(glm::ivec2 pos);
 	Dot(glm::ivec2 pos, const Brain& brain);
 	~Dot() = default;
@@ -30,9 +29,11 @@ public:
 	inline void Move(glm::ivec2 move) { m_Pos += move; }
 
 	inline glm::ivec2 GetPos() const { return m_Pos; }
+	inline Brain& GetBrain() { return m_Brain; }
+
+	inline void SetPos(glm::ivec2 pos) { m_Pos = pos; }
 
 private:
-	glm::ivec2 m_Pos;
-
 	Brain m_Brain;
+	glm::ivec2 m_Pos;
 };
