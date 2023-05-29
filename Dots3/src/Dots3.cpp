@@ -77,5 +77,5 @@ void Dots3::OnEvent(Eis::Event& e)
 
 bool SurvivalLaw(const Dot& dot)
 {
-	return (dot.GetPos().x < SpaceSize / 2); //&& (40 < dot.GetPos().y && dot.GetPos().y < 60);
+	return (dot.GetPos().x < SpaceSize / 8) || (dot.GetPos().x > (SpaceSize - SpaceSize / 8));
 }

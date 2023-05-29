@@ -80,8 +80,13 @@ Brain::Action Brain::Compute()
 
 	// Figure out the action using the results
 	{
-		int moveX = ((results[0] > ActionActivThreshold) ? 1 : ((results[0] < -ActionActivThreshold) ? -1 : 0));
-		int moveY = ((results[1] > ActionActivThreshold) ? 1 : ((results[1] < -ActionActivThreshold) ? -1 : 0));
+		int moveX = 0;
+		int moveY = 0;
+
+		if (Eis::Random::Float() < fabs(results[0]))
+			moveX = results[0] > 0 ? 1 : -1;
+		if (Eis::Random::Float() < fabs(results[1]))
+			moveY = results[1] > 0 ? 1 : -1;
 
 		if (!moveX && !moveY)
 			return Action::None;
