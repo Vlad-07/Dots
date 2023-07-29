@@ -1,6 +1,6 @@
 workspace "Dots"
 	architecture "x86_64"
-	startproject "Dots3"
+	startproject "CarDot"
 
 	configurations
 	{
@@ -201,8 +201,8 @@ project "Dots2"
 			optimize "on"
 
 
-project "Dots3"
-	location "Dots3"
+project "CarDot"
+	location "CarDot"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -248,3 +248,54 @@ project "Dots3"
 		defines "EIS_DISTRIB"
 		runtime "Release"
 		optimize "on"
+
+		project "Dots3"
+		location "Dots3"
+		kind "ConsoleApp"
+		language "C++"
+		cppdialect "C++17"
+		staticruntime "on"
+	
+		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+		
+		files
+		{
+			"%{prj.name}/src/**.h",
+			"%{prj.name}/src/**.cpp",
+			"%{prj.name}/src/**.hpp"
+		}
+	
+		includedirs
+		{
+			"Eis/Eis/src",
+			"Eis/Eis/vendor/spdlog/include",
+			"Eis/Eis/vendor/imgui",
+			"%{IncludeDir.glm}",
+			"%{IncludeDir.stb_image}",
+			"%{IncludeDir.stb_image_resize}",
+			"%{IncludeDir.stb_image_write}"
+		}
+	
+		links
+		{
+			"Eis"
+		}
+		
+		filter "system:windows"
+			systemversion "latest"
+	
+		filter "configurations:Debug"
+			defines "EIS_DEBUG"
+			runtime "Debug"
+			symbols "on"
+	
+		filter "configurations:Release"
+			defines "EIS_RELEASE"
+			runtime "Release"
+			optimize "on"
+	
+		filter "configurations:Distrib"
+			defines "EIS_DISTRIB"
+			runtime "Release"
+			optimize "on"
