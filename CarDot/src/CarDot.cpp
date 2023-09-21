@@ -55,6 +55,8 @@ void CarDot::OnAttach()
 	m_Checkpoints.push_back({ glm::vec2( 10.001f,  -2.701f), glm::vec2( 12.0f,  -4.2f) }); // 29
 	m_Checkpoints.push_back({ glm::vec2( 17.101f,   0.001f), glm::vec2( 22.0f,   0.0f) }); // 30
 	#pragma endregion
+
+	m_SubjectManager.LoadBestSave();
 }
 
 void CarDot::OnDetach() {}

@@ -28,6 +28,8 @@ public:
 	int GetScore() const { return m_Score; }
 	Car& GetCar() { return m_Car; }
 	Brain& GetBrain() { return m_Brain; }
+	const Car& GetCar() const { return m_Car; }
+	const Brain& GetBrain() const { return m_Brain; }
 	uint32_t GetTicksNotAdvancing() const { return m_TicksNotAdvancing; }
 
 	void DrawNetwork() const;

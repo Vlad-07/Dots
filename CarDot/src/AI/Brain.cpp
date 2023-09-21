@@ -37,9 +37,9 @@ void Brain::Merge(const Brain& b1, const Brain& b2)
 		for (int j = 0; j < m_SensoryNeuronsConnections[i].size(); j++)
 		{
 			float randomVal = Eis::Random::Float();
-			if (randomVal > 0.505f)	// First Parent
+			if (randomVal > 0.55f)	// First Parent
 				m_SensoryNeuronsConnections[i][j].SetWeight(b1.m_SensoryNeuronsConnections[i][j].GetWeight());
-			else if (randomVal > 0.1f) // Second parent
+			else if (randomVal > 0.2f) // Second parent
 				m_SensoryNeuronsConnections[i][j].SetWeight(b2.m_SensoryNeuronsConnections[i][j].GetWeight());
 			else						// Mutate
 				m_SensoryNeuronsConnections[i][j].SetWeight(Eis::Random::Float(-2.0f, 2.0f));
@@ -47,15 +47,14 @@ void Brain::Merge(const Brain& b1, const Brain& b2)
 	}
 }
 
-void Brain::SetSensorInput(int id, float signal)
+void Brain::SetSensorInput(uint16_t id, float signal)
 {
 	if (id >= BrainSensoryNeurons)
 		EIS_ASSERT(false, "Writing to invalid sensory neuron!");
 
 	m_SensoryNeurons[id].AddSignal(signal);
 }
-
-float Brain::GetActionNeuronOutput(int id) const
+float Brain::GetActionNeuronOutput(uint16_t id) const
 {
 	if (id >= BrainSensoryNeurons)
 		EIS_ASSERT(false, "Reading invalid action neuron!");

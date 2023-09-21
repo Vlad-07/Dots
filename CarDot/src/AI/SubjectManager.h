@@ -12,7 +12,9 @@ const int MaxIdleTicksAllowed = 500;
 const int KeepBestXSubjects = 2;
 
 const glm::vec2 SubjectStartPos(19.5f, 2.0f);
-const float StartOrientation = 0.0f;
+const float StartOrientation = 0.0f; // Radians
+
+const int NetworkSaveInterval = 10; // Generations
 
 
 class SubjectManager
@@ -31,9 +33,15 @@ public:
 	void ResetSimulation();
 
 	int AliveSubjects() const;
+	const Subject& GetBestSubject() const;
 	int GetBestScore() const;
 
-	void DrawBestNetwork() const;
+	void DrawBestNetwork() const { GetBestSubject().DrawNetwork(); }
+	void SaveBestNetwork();
+	void RemoveSaveFiles();
+
+	void LoadSave(const std::string& path);
+	void LoadBestSave();
 
 	uint32_t GetGeneration() const { return m_Gen; }
 	uint32_t GetTick() const { return m_Tick; }

@@ -6,8 +6,12 @@
 
 #include "Neuron.h"
 
-const int BrainSensoryNeurons = 8;
+const int BrainSensoryNeurons = 7;
 const int BrainActionNeurons = 2;
+
+typedef std::array<SensoryNeuron, BrainSensoryNeurons> SensoryNeurons;
+typedef std::array<ActionNeuron, BrainActionNeurons> ActionNeurons;
+typedef std::array<std::array<Connection, BrainActionNeurons>, BrainSensoryNeurons> Network;
 
 class Brain
 {
@@ -15,9 +19,9 @@ public:
 	Brain();
 	~Brain() = default;
 
-	void SetSensorInput(int id, float signal);
+	void SetSensorInput(uint16_t id, float signal);
 	void Compute();
-	float GetActionNeuronOutput(int id) const;
+	float GetActionNeuronOutput(uint16_t id) const;
 
 	void ResetNetwork();
 
@@ -27,11 +31,13 @@ public:
 
 	const auto& GetSensoryNeurons() const { return m_SensoryNeurons; }
 	const auto& GetConnections() const { return m_SensoryNeuronsConnections; }
+
+	void OverwriteNetwork(const Network& network) { m_SensoryNeuronsConnections = network; }
 	
 	Brain& operator=(const Brain& b);
 
 private:
-	std::array<SensoryNeuron, BrainSensoryNeurons> m_SensoryNeurons;
-	std::array<ActionNeuron, BrainActionNeurons> m_ActionNeurons;
-	std::array<std::array<Connection, BrainActionNeurons>, BrainSensoryNeurons> m_SensoryNeuronsConnections;
+	SensoryNeurons m_SensoryNeurons;
+	ActionNeurons m_ActionNeurons;
+	Network m_SensoryNeuronsConnections;
 };

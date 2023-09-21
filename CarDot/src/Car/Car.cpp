@@ -56,12 +56,12 @@ void Car::UserInput(Eis::TimeStep ts)
 
 void Car::ComputerInput(Eis::TimeStep ts, float acceleration, float steering)
 {
-	if (acceleration > 0.5f && GetSpeed() < m_TopSpeed)
+	if (acceleration > 0.0f && GetSpeed() < m_TopSpeed)
 		m_Acceleration += glm::rotate(glm::vec2(0.0f, m_Power * ts), m_Orientation);
-	else if (acceleration < 0.5f)
+	else if (acceleration < 0.0f)
 		m_Velocity *= 0.99f;
 
-	if (steering > 0.5f)
+	if (steering > 0.0f)
 	{
 		m_Orientation += TurnRate() * ts;
 		if (m_Orientation > 6.2831853f)
@@ -69,7 +69,7 @@ void Car::ComputerInput(Eis::TimeStep ts, float acceleration, float steering)
 
 		m_Velocity = glm::rotate(glm::vec2(0.0f, glm::length(m_Velocity)), m_Orientation);
 	}
-	else if (steering < 0.5f)
+	else if (steering < 0.0f)
 	{
 		m_Orientation -= TurnRate() * ts;
 		if (m_Orientation < 0.0f)

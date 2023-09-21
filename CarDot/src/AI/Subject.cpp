@@ -22,7 +22,6 @@ void Subject::Tick(Eis::TimeStep ts)
 	m_Brain.ResetNetwork();
 
 	m_Brain.SetSensorInput(0, glm::length(m_Car.GetSpeed()) / 3.0f);	// Velocity
-	m_Brain.SetSensorInput(1, m_Car.GetOrientation() / 6.2831853f);		// Orientation
 	for (int i = 0; i < 5; i++)											// Rays
 		m_Brain.SetSensorInput(i + 2, m_RaySensorInputs[i] / m_MaxRayDist);
 	m_Brain.SetSensorInput(7, 1.0f);									// Bias
@@ -215,7 +214,7 @@ void Subject::DrawNetwork() const
 	{
 		for (int j = 0; j < conns[0].size(); j++)
 		{
-			Eis::Renderer2D::DrawLine({ bottomRightCorner.x, bottomRightCorner.y + i * 2 }, { bottomRightCorner.x + 10.0f, bottomRightCorner.y + 6.0f + j * 2 },
+			Eis::Renderer2D::DrawLine({ bottomRightCorner.x, bottomRightCorner.y + i * 2 }, { bottomRightCorner.x + 10.0f, bottomRightCorner.y + 6.0f + m_Brain.GetConnections()[i][j].GetDestinationID() * 2 },
 				glm::vec4((conns[i][j].GetWeight() > 0 ? 1.0f : 0.0f), 0.0f, (conns[i][j].GetWeight() < 0 ? 1.0f : 0.0f), 1.0f), conns[i][j].GetWeight() * 2.0f);
 		}
 
