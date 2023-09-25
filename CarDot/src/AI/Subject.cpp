@@ -6,7 +6,7 @@ Subject::Subject(const std::vector<glm::vec2>& interiorLineNodes, const std::vec
 				 const glm::vec2& startPos, const float& startOrientation, Eis::Ref<Eis::Texture2D> carTex)
 	: m_Car(glm::vec2(0.5f, 1.0f), carTex, glm::vec4(Eis::Random::Vec3(0.0f, 1.0f), 1.0f), 5.0f, 3.0f, 3.0f, 1.0f, false), m_Alive(true),
 	  m_InteriorLineNodes(interiorLineNodes), m_ExteriorLineNodes(exteriorLineNodes),m_Checkpoints(checkpoints),
-	  m_StartPos(startPos), m_StartOrientation(startOrientation), m_Score(0), m_NextCheckpointID(0), m_TicksNotAdvancing(0), m_RaySensorInputs()
+	  m_StartPos(startPos), m_StartOrientation(startOrientation), m_Score(0), m_NextCheckpointID(0), m_TicksNotAdvancing(0), m_RaySensorInputs(), m_DebugMode(false)
 {}
 
 
@@ -83,10 +83,13 @@ bool Subject::CheckCarCollision()
 	glm::vec2 carCorner4 = m_Car.GetPosition() + glm::rotate(m_Car.GetSize() * glm::vec2(-0.5f, 0.5f), -m_Car.GetOrientation());
 
 	// Draw car bounding box
-/*	Eis::Renderer2D::DrawLine(carCorner1, carCorner2, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 1.0f);
-	Eis::Renderer2D::DrawLine(carCorner2, carCorner3, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f);
-	Eis::Renderer2D::DrawLine(carCorner3, carCorner4, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
-	Eis::Renderer2D::DrawLine(carCorner4, carCorner1, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 1.0f);//*/
+	if (m_DebugMode && m_Alive)
+	{
+		Eis::Renderer2D::DrawLine(carCorner1, carCorner2, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+		Eis::Renderer2D::DrawLine(carCorner2, carCorner3, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f);
+		Eis::Renderer2D::DrawLine(carCorner3, carCorner4, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+		Eis::Renderer2D::DrawLine(carCorner4, carCorner1, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 1.0f);
+	}	
 
 	// Check checkpoint
 	if (IntersectionPoint(m_Checkpoints[m_NextCheckpointID].start, m_Checkpoints[m_NextCheckpointID].end, carCorner1, carCorner2) != glm::vec2(FLT_MAX))
@@ -115,8 +118,6 @@ bool Subject::CheckCarCollision()
 	}
 
 	m_NextCheckpointID %= m_Checkpoints.size();
-
-//	Eis::Renderer2D::DrawLine(m_Checkpoints[m_NextCheckpointID].start, m_Checkpoints[m_NextCheckpointID].end, glm::vec4(1.0f));
 
 	// Inner Fence
 	for (int i = 1; i < m_InteriorLineNodes.size(); i++)
@@ -196,12 +197,14 @@ void Subject::ReadSensors()
 
 		m_RaySensorInputs[i] = m_MaxRayDist;
 
-		Eis::Renderer2D::DrawLine(rayOrigin, rayEnd, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+		if (m_DebugMode)
+			Eis::Renderer2D::DrawLine(rayOrigin, rayEnd, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
 		continue;
 
 	_found:
 		m_RaySensorInputs[i] = glm::distance(rayOrigin, intP);
-		Eis::Renderer2D::DrawLine(rayOrigin, intP, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+		if (m_DebugMode)
+			Eis::Renderer2D::DrawLine(rayOrigin, intP, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
 	}
 }
 
@@ -219,13 +222,15 @@ void Subject::DrawNetwork() const
 		}
 
 		Eis::Renderer2D::DrawCircle({ bottomRightCorner.x, bottomRightCorner.y + i * 2 }, glm::vec2(0.5f),
-			glm::vec4(glm::vec3((m_Brain.GetSensoryNeurons()[i].GetSignal() + 1.0f) / 2.0f), 1.0f));
+			glm::vec4(glm::vec3(m_Brain.GetSensoryNeurons()[i].GetSignal() > 0.0f ? m_Brain.GetSensoryNeurons()[i].GetSignal() : 0.0f, 0.0f,
+								m_Brain.GetSensoryNeurons()[i].GetSignal() < 0.0f ? m_Brain.GetSensoryNeurons()[i].GetSignal() : 0.0f), 1.0f));
 	}
 
 	for (int i = 0; i < conns[0].size(); i++)
 	{
 		Eis::Renderer2D::DrawCircle({ bottomRightCorner.x + 10.0f, bottomRightCorner.y + 6.0f + i * 2 }, glm::vec2(0.5f),
-			glm::vec4(glm::vec3((m_Brain.GetActionNeuronOutput(i) + 1.0f) / 2.0f), 1.0f));
+			glm::vec4(glm::vec3(m_Brain.GetSensoryNeurons()[i].GetSignal() > 0.0f ? m_Brain.GetSensoryNeurons()[i].GetSignal() : 0.0f, 0.0f,
+								m_Brain.GetSensoryNeurons()[i].GetSignal() < 0.0f ? m_Brain.GetSensoryNeurons()[i].GetSignal() : 0.0f), 1.0f));
 	}
 }
 

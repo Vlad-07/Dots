@@ -1,7 +1,8 @@
 #include "CarDot.h"
 
 CarDot::CarDot()
-	: m_CameraController(16.0f / 9.0f, true), m_LastFrameTime(0.0f), m_SubjectManager(m_InteriorLineNodes, m_ExteriorLineNodes, m_Checkpoints, Eis::Texture2D::Create("assets/textures/car.png"))
+	: m_CameraController(16.0f / 9.0f, true), m_LastFrameTime(0.0f), m_SubjectManager(m_InteriorLineNodes, m_ExteriorLineNodes, m_Checkpoints, Eis::Texture2D::Create("assets/textures/car.png")),
+	  m_DebugMode(false), m_Running(false), m_ScoreSamples(), m_LastGen(0)
 {}
 
 void CarDot::OnAttach()
@@ -55,8 +56,6 @@ void CarDot::OnAttach()
 	m_Checkpoints.push_back({ glm::vec2( 10.001f,  -2.701f), glm::vec2( 12.0f,  -4.2f) }); // 29
 	m_Checkpoints.push_back({ glm::vec2( 17.101f,   0.001f), glm::vec2( 22.0f,   0.0f) }); // 30
 	#pragma endregion
-
-	m_SubjectManager.LoadBestSave();
 }
 
 void CarDot::OnDetach() {}
@@ -77,9 +76,21 @@ void CarDot::OnUpdate(Eis::TimeStep ts)
 
 	DrawTrack();
 
-	m_SubjectManager.DrawBestNetwork();
+	if (m_Running)
+	{
+		if (m_DebugMode)
+			m_SubjectManager.DrawBestNetwork();
 
-	m_SubjectManager.Update(ts);
+		m_SubjectManager.Update(ts);
+
+		if (m_LastGen != m_SubjectManager.GetGeneration())
+		{
+			for (int i = 0; i < 19; i++)
+				m_ScoreSamples[i] = m_ScoreSamples[i + 1];
+			m_ScoreSamples[19] = m_SubjectManager.GetTopScore();
+			m_LastGen++;
+		}
+	}
 
 	Eis::Renderer2D::EndScene();
 }
@@ -97,19 +108,33 @@ void CarDot::OnImGuiRender()
 	ImGui::Text("Top Score: %i", m_SubjectManager.GetTopScore());
 
 	ImGui::NewLine();
+
 	
-	ImGui::Text("FPS: %.1f", 1.0f / m_LastFrameTime);
+	ImGui::PlotLines("Top Score", m_ScoreSamples, 20);
+	
+	if (m_DebugMode)
+		ImGui::Text("FPS: %.1f", 1.0f / m_LastFrameTime);
 
-	/*ImGui::NewLine();
+	ImGui::End();
 
-	ImGui::SliderFloat2("Pos", &m_PreviewPos.x, -30.0f, 30.0f);
-	if (ImGui::Button("Place Node"))
+
+
+	ImGui::Begin("Options");
+
+	if (ImGui::Button("Start"))
+		m_Running = true;
+
+	if (ImGui::Button("Reset"))
 	{
-		m_ExteriorLineNodes.push_back(m_PreviewPos);
-		for (const auto& pos : m_ExteriorLineNodes)
-			EIS_INFO("{0}, {1}", pos.x, pos.y);
-		EIS_INFO("");
-	}*/
+		m_Running = false;
+		m_SubjectManager.ResetSimulation();
+		for (int i = 0; i < 20; i++)
+			m_ScoreSamples[i] = 0;
+		m_LastGen = 0;
+	}
+
+	ImGui::Checkbox("Debug", &m_DebugMode);
+	m_SubjectManager.SetSubjectDebugMode(m_DebugMode);
 
 	ImGui::End();
 }
@@ -130,6 +155,9 @@ void CarDot::DrawTrack()
 	for (int i = 1; i < m_ExteriorLineNodes.size(); i++)
 		Eis::Renderer2D::DrawLine(glm::vec3(m_ExteriorLineNodes[i - 1], 0.0f), glm::vec3(m_ExteriorLineNodes[i], 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
 	Eis::Renderer2D::DrawLine(glm::vec3(m_ExteriorLineNodes.front(), 0.0f), glm::vec3(m_ExteriorLineNodes.back(), 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
+
+	if (!m_DebugMode) // skip checkpoints
+		return;
 
 	for (int i = 0; i < m_Checkpoints.size(); i++)
 		Eis::Renderer2D::DrawLine(glm::vec3(m_Checkpoints[i].start, 0.0f), glm::vec3(m_Checkpoints[i].end, 0.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 1.0f);

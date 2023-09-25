@@ -31,6 +31,9 @@ public:
 	const Car& GetCar() const { return m_Car; }
 	const Brain& GetBrain() const { return m_Brain; }
 	uint32_t GetTicksNotAdvancing() const { return m_TicksNotAdvancing; }
+	bool GetDebugMode() const { return m_DebugMode; }
+
+	void SetDebug(bool debug) { m_DebugMode = debug; }
 
 	void DrawNetwork() const;
 
@@ -60,4 +63,6 @@ private:
 	std::array<float, 5> m_RaySensorInputs;
 	const float m_MaxRayDist = 10.0f;
 	const int m_CheckpointValue = 10;
+
+	bool m_DebugMode;
 };

@@ -114,7 +114,7 @@ void SubjectManager::EndGeneration()
 			}
 		}
 		
-		m_Subjects[i].GetCar().SetTint(glm::vec4((m_Subjects[b1Id].GetCar().GetTint() + m_Subjects[b2Id].GetCar().GetTint()) / 2.0f));
+		m_Subjects[i].GetCar().SetTint(glm::vec4((m_Subjects[b1Id].GetCar().GetTint() + m_Subjects[b2Id].GetCar().GetTint()) / 2.0f) + glm::vec4(Eis::Random::Float(-0.1f, 1.0f), Eis::Random::Float(-0.1f, 1.0f), Eis::Random::Float(-0.1f, 1.0f), 0.0f));
 		m_Subjects[i].GetBrain().Merge(brains[b1Id], brains[b2Id]);
 	}
 
@@ -125,7 +125,6 @@ void SubjectManager::EndGeneration()
 
 void SubjectManager::ResetSimulation()
 {
-	RemoveSaveFiles();
 	ResetSubjects();
 	for (Subject& subject : m_Subjects)
 	{
@@ -187,15 +186,6 @@ void SubjectManager::SaveBestNetwork()
 	}
 }
 
-void SubjectManager::RemoveSaveFiles()
-{
-	for (int i = NetworkSaveInterval; ; i += NetworkSaveInterval)
-	{
-		if (remove(std::string("Gen-" + std::to_string(i) + ".con").c_str()))
-			break;
-	}
-}
-
 void SubjectManager::LoadSave(const std::string& path)
 {
 	std::ifstream in(path);
@@ -247,11 +237,11 @@ void SubjectManager::LoadSave(const std::string& path)
 	m_Gen = gen;
 	for (Subject& s : m_Subjects)
 		s.GetBrain().OverwriteNetwork(network);
-
-
 }
 
-void SubjectManager::LoadBestSave()
+
+void SubjectManager::SetSubjectDebugMode(bool debug)
 {
-	// TODO: find best save file
+	for (Subject& s : m_Subjects)
+		s.SetDebug(debug);
 }

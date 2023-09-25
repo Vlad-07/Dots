@@ -38,14 +38,14 @@ public:
 
 	void DrawBestNetwork() const { GetBestSubject().DrawNetwork(); }
 	void SaveBestNetwork();
-	void RemoveSaveFiles();
 
 	void LoadSave(const std::string& path);
-	void LoadBestSave();
 
 	uint32_t GetGeneration() const { return m_Gen; }
 	uint32_t GetTick() const { return m_Tick; }
 	uint32_t GetTopScore() const { return m_TopScore; }
+
+	void SetSubjectDebugMode(bool debug);
 
 private:
 	std::vector<Subject> m_Subjects;

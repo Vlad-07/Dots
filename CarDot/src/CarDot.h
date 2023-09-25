@@ -32,4 +32,9 @@ private:
 	std::vector<Checkpoint> m_Checkpoints;
 
 	float m_LastFrameTime;
+	bool m_DebugMode;
+	bool m_Running;
+
+	float m_ScoreSamples[20];
+	int m_LastGen;
 };
