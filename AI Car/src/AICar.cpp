@@ -1,11 +1,13 @@
-#include "CarDot.h"
+#include "AICar.h"
 
-CarDot::CarDot()
-	: m_CameraController(16.0f / 9.0f), m_LastFrameTime(0.0f), m_SubjectManager(m_InteriorLineNodes, m_ExteriorLineNodes, m_Checkpoints, Eis::Texture2D::Create("assets/textures/car.png")),
+AICar::AICar()
+	: Layer("AI Car"), m_CameraController(16.0f / 9.0f), m_LastFrameTime(0.0f), m_SubjectManager(m_InteriorLineNodes, m_ExteriorLineNodes, m_Checkpoints, Eis::Texture2D::Create("assets/textures/car.png")),
 	  m_DebugMode(false), m_Running(false), m_ScoreSamples(), m_LastGen(0)
-{}
+{
+	Eis::Application::Get().GetWindow().SetTitle("AI Car");
+}
 
-void CarDot::OnAttach()
+void AICar::OnAttach()
 {
 	EIS_PROFILE_FUNCTION();
 
@@ -61,10 +63,10 @@ void CarDot::OnAttach()
 	#pragma endregion
 }
 
-void CarDot::OnDetach() {}
+void AICar::OnDetach() {}
 
 
-void CarDot::OnUpdate(Eis::TimeStep ts)
+void AICar::OnUpdate(Eis::TimeStep ts)
 {
 	EIS_PROFILE_FUNCTION();
 
@@ -90,7 +92,7 @@ void CarDot::OnUpdate(Eis::TimeStep ts)
 		{
 			for (int i = 0; i < 19; i++)
 				m_ScoreSamples[i] = m_ScoreSamples[i + 1];
-			m_ScoreSamples[19] = m_SubjectManager.GetTopScore();
+			m_ScoreSamples[19] = (float)m_SubjectManager.GetTopScore();
 			m_LastGen++;
 		}
 	}
@@ -98,7 +100,7 @@ void CarDot::OnUpdate(Eis::TimeStep ts)
 	Eis::Renderer2D::EndScene();
 }
 
-void CarDot::OnImGuiRender()
+void AICar::OnImGuiRender()
 {
 	EIS_PROFILE_FUNCTION();
 
@@ -142,12 +144,12 @@ void CarDot::OnImGuiRender()
 	ImGui::End();
 }
 
-void CarDot::OnEvent(Eis::Event& e)
+void AICar::OnEvent(Eis::Event& e)
 {
 	m_CameraController.OnEvent(e);
 }
 
-void CarDot::DrawTrack()
+void AICar::DrawTrack()
 {
 	EIS_PROFILE_FUNCTION();
 

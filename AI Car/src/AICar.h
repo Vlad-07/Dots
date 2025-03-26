@@ -7,11 +7,11 @@
 #include "AI/Subject.h"
 #include "AI/SubjectManager.h"
 
-class CarDot : public Eis::Layer
+class AICar : public Eis::Layer
 {
 public:
-	CarDot();
-	virtual ~CarDot() = default;
+	AICar();
+	virtual ~AICar() = default;
 
 
 	void OnAttach() override;
