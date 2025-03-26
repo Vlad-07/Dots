@@ -25,7 +25,7 @@ void Car::Update(Eis::TimeStep ts)
 
 void Car::Render() const
 {
-	Eis::Renderer2D::DrawRotatedQuad(m_Pos, m_Size, m_Orientation, m_Texture, m_Tint);
+	Eis::Renderer2D::DrawRotatedQuad(m_Pos, m_Size, glm::degrees(m_Orientation), m_Texture, 1.0f, m_Tint);
 }
 
 

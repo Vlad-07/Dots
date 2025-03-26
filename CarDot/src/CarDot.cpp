@@ -1,7 +1,7 @@
 #include "CarDot.h"
 
 CarDot::CarDot()
-	: m_CameraController(16.0f / 9.0f, true), m_LastFrameTime(0.0f), m_SubjectManager(m_InteriorLineNodes, m_ExteriorLineNodes, m_Checkpoints, Eis::Texture2D::Create("assets/textures/car.png")),
+	: m_CameraController(16.0f / 9.0f), m_LastFrameTime(0.0f), m_SubjectManager(m_InteriorLineNodes, m_ExteriorLineNodes, m_Checkpoints, Eis::Texture2D::Create("assets/textures/car.png")),
 	  m_DebugMode(false), m_Running(false), m_ScoreSamples(), m_LastGen(0)
 {}
 
@@ -10,7 +10,10 @@ void CarDot::OnAttach()
 	EIS_PROFILE_FUNCTION();
 
 	Eis::RenderCommands::Disable(0x0B71); // GL_DEPTH_TEST
-	m_CameraController.OnEvent(Eis::MouseScrolledEvent(0.0f, -100.0f)); // HACK: artificial camera zoom
+	m_CameraController.SetMaxZoom(22.0f);
+	m_CameraController.SetZoom(22.0f);
+	m_CameraController.SetPoseLock(true);
+	m_CameraController.SetZoomLock(true);
 
 	#pragma region Track Bounds
 	m_InteriorLineNodes.push_back(glm::vec2(17.206f, 0.0f));
@@ -149,16 +152,16 @@ void CarDot::DrawTrack()
 	EIS_PROFILE_FUNCTION();
 
 	for (int i = 1; i < m_InteriorLineNodes.size(); i++)
-		Eis::Renderer2D::DrawLine(glm::vec3(m_InteriorLineNodes[i - 1], 0.0f), glm::vec3(m_InteriorLineNodes[i], 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
-	Eis::Renderer2D::DrawLine(glm::vec3(m_InteriorLineNodes.front(), 0.0f), glm::vec3(m_InteriorLineNodes.back(), 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
+		Eis::Renderer2D::DrawLine(glm::vec3(m_InteriorLineNodes[i - 1], 0.0f), glm::vec3(m_InteriorLineNodes[i], 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	Eis::Renderer2D::DrawLine(glm::vec3(m_InteriorLineNodes.front(), 0.0f), glm::vec3(m_InteriorLineNodes.back(), 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	for (int i = 1; i < m_ExteriorLineNodes.size(); i++)
-		Eis::Renderer2D::DrawLine(glm::vec3(m_ExteriorLineNodes[i - 1], 0.0f), glm::vec3(m_ExteriorLineNodes[i], 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
-	Eis::Renderer2D::DrawLine(glm::vec3(m_ExteriorLineNodes.front(), 0.0f), glm::vec3(m_ExteriorLineNodes.back(), 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1.0f);
+		Eis::Renderer2D::DrawLine(glm::vec3(m_ExteriorLineNodes[i - 1], 0.0f), glm::vec3(m_ExteriorLineNodes[i], 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	Eis::Renderer2D::DrawLine(glm::vec3(m_ExteriorLineNodes.front(), 0.0f), glm::vec3(m_ExteriorLineNodes.back(), 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	if (!m_DebugMode) // skip checkpoints
 		return;
 
 	for (int i = 0; i < m_Checkpoints.size(); i++)
-		Eis::Renderer2D::DrawLine(glm::vec3(m_Checkpoints[i].start, 0.0f), glm::vec3(m_Checkpoints[i].end, 0.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+		Eis::Renderer2D::DrawLine(glm::vec3(m_Checkpoints[i].start, 0.0f), glm::vec3(m_Checkpoints[i].end, 0.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
 }

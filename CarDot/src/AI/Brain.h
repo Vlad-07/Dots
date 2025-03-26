@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include <Eis/Core/Random.h>
+#include <Eis.h>
 
 #include "Neuron.h"
 

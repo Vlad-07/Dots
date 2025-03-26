@@ -24,7 +24,7 @@ void Subject::Tick(Eis::TimeStep ts)
 	m_Brain.SetSensorInput(0, glm::length(m_Car.GetSpeed()) / 3.0f);	// Velocity
 	for (int i = 0; i < 5; i++)											// Rays
 		m_Brain.SetSensorInput(i + 2, m_RaySensorInputs[i] / m_MaxRayDist);
-	m_Brain.SetSensorInput(7, 1.0f);									// Bias
+	m_Brain.SetSensorInput(5, 1.0f);									// Bias
 
 	m_Brain.Compute();
 
@@ -85,10 +85,10 @@ bool Subject::CheckCarCollision()
 	// Draw car bounding box
 	if (m_DebugMode && m_Alive)
 	{
-		Eis::Renderer2D::DrawLine(carCorner1, carCorner2, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 1.0f);
-		Eis::Renderer2D::DrawLine(carCorner2, carCorner3, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f);
-		Eis::Renderer2D::DrawLine(carCorner3, carCorner4, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
-		Eis::Renderer2D::DrawLine(carCorner4, carCorner1, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), 1.0f);
+		Eis::Renderer2D::DrawLine(carCorner1, carCorner2, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+		Eis::Renderer2D::DrawLine(carCorner2, carCorner3, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		Eis::Renderer2D::DrawLine(carCorner3, carCorner4, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		Eis::Renderer2D::DrawLine(carCorner4, carCorner1, glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
 	}	
 
 	// Check checkpoint
@@ -198,13 +198,13 @@ void Subject::ReadSensors()
 		m_RaySensorInputs[i] = m_MaxRayDist;
 
 		if (m_DebugMode)
-			Eis::Renderer2D::DrawLine(rayOrigin, rayEnd, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+			Eis::Renderer2D::DrawLine(rayOrigin, rayEnd, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		continue;
 
 	_found:
 		m_RaySensorInputs[i] = glm::distance(rayOrigin, intP);
 		if (m_DebugMode)
-			Eis::Renderer2D::DrawLine(rayOrigin, intP, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 1.0f);
+			Eis::Renderer2D::DrawLine(rayOrigin, intP, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 }
 
@@ -218,7 +218,7 @@ void Subject::DrawNetwork() const
 		for (int j = 0; j < conns[0].size(); j++)
 		{
 			Eis::Renderer2D::DrawLine({ bottomRightCorner.x, bottomRightCorner.y + i * 2 }, { bottomRightCorner.x + 10.0f, bottomRightCorner.y + 6.0f + m_Brain.GetConnections()[i][j].GetDestinationID() * 2 },
-				glm::vec4((conns[i][j].GetWeight() > 0 ? 1.0f : 0.0f), 0.0f, (conns[i][j].GetWeight() < 0 ? 1.0f : 0.0f), 1.0f), conns[i][j].GetWeight() * 2.0f);
+				glm::vec4((conns[i][j].GetWeight() > 0 ? 1.0f : 0.0f), 0.0f, (conns[i][j].GetWeight() < 0 ? 1.0f : 0.0f), 1.0f));
 		}
 
 		Eis::Renderer2D::DrawCircle({ bottomRightCorner.x, bottomRightCorner.y + i * 2 }, glm::vec2(0.5f),

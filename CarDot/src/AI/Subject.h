@@ -60,7 +60,7 @@ private:
 
 	uint32_t m_TicksNotAdvancing;
 
-	std::array<float, 5> m_RaySensorInputs;
+	std::array<float, 6> m_RaySensorInputs;
 	const float m_MaxRayDist = 10.0f;
 	const int m_CheckpointValue = 10;
 
